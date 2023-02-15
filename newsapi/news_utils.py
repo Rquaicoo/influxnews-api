@@ -64,8 +64,6 @@ def searchNewsFromWorldAPI(query, apiKey=os.environ.get("WORLD_API_KEY")):
             source=result["source_country"],
             author=result["author"]
         )
-    
-    return results
 
 def searchNewsFromNewsAPI(query, apiKey=os.environ.get("NEWS_API_KEY")):
     results = requests.get(f"https://newsapi.org/v2/everything?q={query}&apiKey={apiKey}&pageSize=100&sortBy=popularity")
@@ -85,12 +83,8 @@ def searchNewsFromNewsAPI(query, apiKey=os.environ.get("NEWS_API_KEY")):
                 language="en",
                 author=result["author"]
             )
-        return results.json()
-    pass
 
 
 def searchNews(query):
-    pass
-
-def getNews(query):
-    pass
+    world_api_results = searchNewsFromWorldAPI(query)
+    news_api_results = searchNewsFromNewsAPI(query)
