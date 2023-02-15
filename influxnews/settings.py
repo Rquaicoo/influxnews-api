@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'newsapi',
-    'rest_framework'
+    'rest_framework',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -119,6 +120,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+CRONJOBS = [
+    ('0 */2 * * *', 'newsapi.news_utils.getLatestHeadLines', '>> /cron/influxnews.log'),
+    ('0 */2 * * *', 'newsapi.news_utils.getNewsFromMediaStack', '>> /cron/influxnews.log'),
 ]
 
 
