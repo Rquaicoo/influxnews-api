@@ -7,7 +7,8 @@ from rest_framework import status
 from firebase_admin import credentials
 from firebase_admin import auth
 from rest_framework import authentication
-from rest_framework.permissions import AllowAny
+from .account_serializers import UserSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
 import os
 
 
@@ -43,7 +44,7 @@ class CreateUserAPIView(APIView):
 
         firebase_id_token (str)
         """
-        firebase_id_token = request.data["firebase_id_token"]
+        firebase_id_token = request.headers.get('Authorization')
         firstname = request.data["name"].split(" ")[0]
         lastname = request.data["name"].split(" ")[1]
 
@@ -63,7 +64,65 @@ class CreateUserAPIView(APIView):
         except:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         
-        
+
+class User(APIView):
+    authentication_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Parameters:
+
+        firebase_id_token (str)
+        """
+        try:
+            firebase_id_token = request.headers.get('Authorization')
+        except:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        user_id, _, _ = authenticateWithFirebase(firebase_id_token)
+        user = User.objects.get(username=user_id)
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    
+    def put(self, request):
+        """
+        Parameters:
+
+        firebase_id_token (str)
+        """
+        try:
+            firebase_id_token = request.headers.get('Authorization')
+        except:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        user_id, _, _ = authenticateWithFirebase(firebase_id_token)
+        user = User.objects.get(username=user_id)
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request):
+        """
+        Parameters:
+
+        firebase_id_token (str)
+        """
+        try:
+            firebase_id_token = request.headers.get('Authorization')
+        except:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        user_id, _, _ = authenticateWithFirebase(firebase_id_token)
+        user = User.objects.get(username=user_id)
+        user.delete()
+        return Response(status=status.HTTP_200_OK)
+
+
 
 
 
