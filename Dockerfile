@@ -6,10 +6,10 @@ RUN alias py=python
 
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/influxnews
 
 COPY ./influxnews .
-COPY ./requirements.txt .
+COPY ./requirements.txt /usr/src/influxnews/
 
 RUN pip install -r requirements.txt
 
@@ -18,5 +18,6 @@ RUN mkdir /cron
 RUN touch /cron/influxnews.log
 
 EXPOSE 8000
+
 
 CMD service cron start && python manage.py runserver 0.0.0.0:8000

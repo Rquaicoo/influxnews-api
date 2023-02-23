@@ -1,1 +1,0 @@
-web: python manage.py migrate && python manage.py crontab add && gunicorn influxnews.wsgi
