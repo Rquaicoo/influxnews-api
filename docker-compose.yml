@@ -6,6 +6,7 @@ services:
         container_name: influxnews
         volumes:
             - ./influxnews:/usr/src/influxnews
-        env_file: .env
+        env_file:
+            - .env
         ports:
             - 8000:8000
