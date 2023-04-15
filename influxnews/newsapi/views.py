@@ -4,7 +4,7 @@ from rest_framework.response import Response
 import rest_framework.status as status
 from rest_framework.views import APIView
 from .models import News
-from .news_utils import searchNews, getLatestHeadLines, getNewsFromMediaStack
+from .news_utils import getBBCHeadlines, getBBCSportsHeadLines, getTechCruchHeadlines
 from .serializers import NewsSerializer
 
 # Create your views here.
@@ -23,10 +23,6 @@ class NewsAPIView(APIView):
         if query:
             news = News.objects.filter(language=language, country=country, category=category, title__icontains=query).order_by('-publishedAt')
 
-            #check if news is empty
-            if not news:
-                searchNews(query)
-
             news = News.objects.filter(language=language, country=country, category=category, title__icontains=query).order_by('-publishedAt')
             
             searialized_news = NewsSerializer(news, many=True)
@@ -37,7 +33,7 @@ class NewsAPIView(APIView):
             searialized_news = NewsSerializer(news, many=True)
             return Response(searialized_news.data, status=status.HTTP_200_OK)
 
-        news = News.objects.filter(language=language, country=country, category=category).order_by('-publishedAt')
+        news = News.objects.all().order_by('-publishedAt')
         searialized_news = NewsSerializer(news, many=True)
         return Response(searialized_news.data, status=status.HTTP_200_OK)
 
@@ -45,6 +41,8 @@ class NewsScraperAPIView(APIView):
     permission_classes  = [AllowAny] #change this to firebase authentication
 
     def get(self, request):
-        getLatestHeadLines()
-        getNewsFromMediaStack()
+        
+        getBBCHeadlines()
+        getBBCSportsHeadLines()
+        getTechCruchHeadlines()
         return Response("News Scrapped", status=status.HTTP_200_OK)
