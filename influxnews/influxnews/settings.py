@@ -15,18 +15,18 @@ from dotenv import load_dotenv
 import os
 import environ
 
-env = environ.Env()
-environ.Env.read_env()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+#set the path to the .env file in the root directory
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('django_secret_key')
+SECRET_KEY = load_dotenv("django_secret_key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -89,7 +89,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
-    ),
+    ), 
 }
 
 # Database
@@ -98,11 +98,11 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('postgres_db_name'),
-        'USER': env('postgres_db_user'),
-        'PASSWORD': env('postgres_db_password'),
-        'HOST': env('postgres_db_host'),
-        'PORT': env('postgres_db_port'),
+        'NAME': load_dotenv("postgres_db_name"),
+        'USER': load_dotenv("postgres_db_user"),
+        'PASSWORD': load_dotenv("postgres_db_password"),
+        'HOST': load_dotenv("postgres_db_host"),
+        'PORT': load_dotenv("postgres_db_port"),
     }
 }
 
@@ -126,8 +126,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CRONJOBS = [
-    ('0 */2 * * *', 'newsapi.news_utils.getLatestHeadLines', '>> /cron/influxnews.log'),
-    ('0 */2 * * *', 'newsapi.news_utils.getNewsFromMediaStack', '>> /cron/influxnews.log'),
+    ('0 */12 * * *', 'newsapi.news_utils.getBBCSportsHeadLines', '>> /cron/influxnews.log'),
+    ('0 */12 * * *', 'newsapi.news_utils.getBBCHeadlines', '>> /cron/influxnews.log'),
+    ('0 */12 * * *', 'newsapi.news_utils.getTechCruchHeadlines', '>> /cron/influxnews.log'),
 ]
 
 

@@ -13,7 +13,7 @@ load_dotenv()
 class FirebaseAuthentication(BaseAuthentication):
 
     
-    credentials = credentials.Certificate("firebase-creds.json")
+    credentials = credentials.Certificate(os.path.abspath(os.path.dirname(__file__)) + "/firebase-creds.json")
 
     default_app = firebase_admin.initialize_app(credentials)
 
@@ -28,5 +28,6 @@ class FirebaseAuthentication(BaseAuthentication):
             user_id = decoded_token['uid']
 
             return (User.objects.get(username=user_id), None)
+        
         except:
             return None
