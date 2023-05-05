@@ -27,7 +27,7 @@ class FirebaseAuthentication(BaseAuthentication):
             decoded_token = auth.verify_id_token(token)
             user_id = decoded_token['uid']
 
-            return (User.objects.get(username=user_id), None)
+            return User.objects.get(username=user_id), True
         
         except:
-            return None
+            return None, False
