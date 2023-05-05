@@ -19,4 +19,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN mkdir /cron
 RUN touch /cron/influxnews.log
 
+EXPOSE 8000
+
 CMD service cron start && gunicorn influxnews.wsgi:application --bind 0.0.0.0:$PORT
