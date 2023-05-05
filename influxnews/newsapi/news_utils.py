@@ -17,7 +17,7 @@ bbc_sport = Author.objects.get(name='BBC Sport')
 
 
 def getBBCHeadlines():
-    respose = requests.get('https://www.bbc.com/')
+    respose = requests.get('https://www.bbc.com/', headers={'Referer': 'https://www.google.com/'})
     soup = BeautifulSoup(respose.text, 'html.parser')
 
     #get undordered list with class 'media-list'
@@ -32,7 +32,7 @@ def getBBCHeadlines():
         title = re.sub('\s+', " ", li.find('h3').text) if li.find('h3') else li.find('h4').text
         description = re.sub('\s+', " ", li.find('p').text) if li.find('p') else ''
 
-        News.objects.create(
+        news, created = News.objects.get_or_create(
             title=title,
             description=description,
             url=link,
@@ -47,7 +47,7 @@ def getBBCHeadlines():
 
 def getBBCSportsHeadLines():
     football_news = "https://www.bbc.com/sport/football"
-    response = requests.get(football_news)
+    response = requests.get(football_news, headers={'Referer': 'https://www.bbc.com/sport/football'})
     soup = BeautifulSoup(response.text, 'html.parser')
 
     #get div with class 'sp-qa-top-stories'
@@ -60,7 +60,7 @@ def getBBCSportsHeadLines():
         title = item.find('h3').text
         description = item.find('a', {'class': 'gs-c-promo-heading'}).text
 
-        News.objects.create(
+        news, created = News.objects.get_or_create(
             title=title,
             description=description,
             url=link,
@@ -79,7 +79,7 @@ def getTechCruchHeadlines():
     categories = ['artificial-intelligence', 'fintech', 'startups', 'security', 'cryptocurrency', 'apps', 'media-entertainment', 'hardware']
 
     for category in categories:
-        response = requests.get(techcrunch + "category/" + category)
+        response = requests.get(techcrunch + "category/" + category, headers={'Referer': 'https://techcrunch.com/'})
         soup = BeautifulSoup(response.text, 'html.parser')
 
         #get article elements
@@ -92,7 +92,7 @@ def getTechCruchHeadlines():
             description = re.sub('\s+', " ", item.find('div', {'class': 'post-block__content'}).text)
             time = item.find('time')['datetime']
 
-            News.objects.create(
+            news, created = News.objects.get_or_create(
                 title=title,
                 description=description,
                 url=link,
