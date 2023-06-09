@@ -26,13 +26,14 @@ environ.Env.read_env()
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = load_dotenv("django_secret_key")
+SECRET_KEY = "django-insecure---(8d761ioy*m5r_0fl-g*=0e)%u77i(^n&^fp%jlmg3ec7(7o"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = ['https://superficial-vegetable-production.up.railway.app', 'http://127.0.0.1']
  
 # Application definition
 
@@ -98,14 +99,13 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': load_dotenv("postgres_db_name"),
-        'USER': load_dotenv("postgres_db_user"),
-        'PASSWORD': load_dotenv("postgres_db_password"),
-        'HOST': load_dotenv("postgres_db_host"),
-        'PORT': load_dotenv("postgres_db_port"),
+        'NAME': "railway",
+        'USER': "postgres",
+        'PASSWORD': "u6ueAmbsN7Vs0m2JrHEl",
+        'HOST': "containers-us-west-200.railway.app",
+        'PORT': "6797",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -126,9 +126,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CRONJOBS = [
-    ('0 */12 * * *', 'newsapi.news_utils.getBBCSportsHeadLines', '>> /cron/influxnews.log'),
-    ('0 */12 * * *', 'newsapi.news_utils.getBBCHeadlines', '>> /cron/influxnews.log'),
-    ('0 */12 * * *', 'newsapi.news_utils.getTechCruchHeadlines', '>> /cron/influxnews.log'),
+    ('0 * * * *', 'newsapi.news_utils.getBBCSportsHeadLines', '>> /cron/influxnews.log'),
+    ('0 * * * *', 'newsapi.news_utils.getBBCHeadlines', '>> /cron/influxnews.log'),
+    ('0 * * * *', 'newsapi.news_utils.getTechCruchHeadlines', '>> /cron/influxnews.log'),
 ]
 
 

@@ -13,7 +13,7 @@ class NewsPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 20
-
+    page_query_param = 'p'
 
 # Create your views here.
 class NewsAPIView(APIView):
@@ -27,9 +27,9 @@ class NewsAPIView(APIView):
         Parameters:
 
         language (str)
-        country (str)
+        country (str) 
         category (str)
-        latest (bool)
+        latest (bool) 
         """
         if query:
 
