@@ -3,7 +3,7 @@ from sklearn.metrics.pairwise import linear_kernel
 from newsapi.models import News
 
 
-def check_article_similarity(article1, article2):
+def check_article_similarity(article1: int, article2: int) -> float:
     '''
     Check if the articles are similar with cosine similarity
 
@@ -16,20 +16,23 @@ def check_article_similarity(article1, article2):
     cosine_similarity = linear_kernel(matrix[0:1], matrix).flatten()
     return cosine_similarity[1]
 
-def get_similar_articles(article_id):
+def get_similar_articles(article_id: int) -> list[int]:
     '''
     Get similar articles
 
     :param article_id: Article ID
     '''
 
+    similar_article_ids = []
+
     for article in News.objects.all():
         similarity = check_article_similarity(article_id, article.id)
         if similarity > 0.5:
-            return article.id
-    pass
+            similar_article_ids.append(article.id)
+    
+    return similar_article_ids
 
-def get_recommended_articles(article_id):
+def get_recommended_articles(article_ids: list):
     # Get recommended articles
     pass
 
