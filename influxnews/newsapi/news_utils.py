@@ -32,6 +32,8 @@ def getBBCHeadlines():
         title = re.sub('\s+', " ", li.find('h3').text) if li.find('h3') else li.find('h4').text
         description = re.sub('\s+', " ", li.find('p').text) if li.find('p') else ''
 
+        print(link, image, title, description, tag)
+
         news, created = News.objects.get_or_create(
             title=title,
             description=description,
