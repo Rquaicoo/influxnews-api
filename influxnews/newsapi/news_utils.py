@@ -34,6 +34,13 @@ def getBBCHeadlines():
 
         print(link, image, title, description, tag)
 
+        if link.split("//")[0] != "https:":
+            link = "https://www.bbc.com" + link
+
+        temp = image.split("/144/")
+
+        image = "/720/".join(temp)
+
         news, created = News.objects.get_or_create(
             title=title,
             description=description,
@@ -61,6 +68,9 @@ def getBBCSportsHeadLines():
         image = item.find('img')['data-src'].replace("{width}", "800")
         title = item.find('h3').text
         description = item.find('a', {'class': 'gs-c-promo-heading'}).text
+
+        if link.split("//")[0] != "https:":
+            link = "https://www.bbc.com" + link
 
         news, created = News.objects.get_or_create(
             title=title,
