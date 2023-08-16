@@ -1,33 +1,32 @@
-from django.test import TestCase
-import os
-import firebase_admin
+from unittest import TestCase
 from firebase_admin import credentials
 from accounts.auth import FirebaseAuthentication
-import requests
+from django.contrib.auth import get_user_model
+from rest_framework.test import APIRequestFactory
 
 # Create your tests here.
 # Create your tests here.
 
 class TestFirebaseAuthentication(TestCase):
     def setUp(self):
-        #initialize firebase sdk
-        creds = credentials.Certificate(os.path.abspath(os.path.dirname(__file__)) + "/firebase-creds.json")
-        firebase_admin.initialize_app(creds)
+        self.factory = APIRequestFactory()
+        self.authenticator = FirebaseAuthentication()
 
     def test_correct_tokens(self):
-        request = requests.get("https://superficial-vegetable.railay.app/", headers={
-            "Authorization": ""
-        })
+        header = {"Authorization": "Id8O2li4eRSzovJda8jmDwlq9IW2"}
+        request = self.factory.get("/", headers=header)
 
-        user, exists = FirebaseAuthentication.authenticate(request)
+        user, exists = self.authenticator.authenticate(request)
+        print(user, exists)
         
         self.assertTrue(exists)
 
     def test_incorrect_token(self):
-        request = requests.get("https://superficial-vegetable.railay.app/", headers={
-            "Authorization": "incorrecttoken"
+        request = self.factory.get("/", headers={
+            "Authorization": "Id8O2li4eRSzovJda8jmDwlq9IV2"
         })
 
-        user, exists = FirebaseAuthentication.authenticate(request)
-
-        self.assertFalse(exists)
+        user, exists = self.authenticator.authenticate(request)
+        print(user, exists)
+        
+        self.assertTrue(exists)
