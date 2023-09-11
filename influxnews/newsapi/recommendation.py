@@ -7,7 +7,7 @@ import re
 
 def filter_by_user_content(user_id, num_recommendations):
     """
-    
+    This function takes in a user id and returns a list of news articles that are similar to the news articles that the user has viewed.
     """
     
     news_articles = News.objects.filter(viewed_by=user_id).order_by('-date_scraped')
@@ -38,6 +38,9 @@ def filter_by_user_content(user_id, num_recommendations):
 
 
 def filter_by_other_user_interests(user_id, num_recommendations):
+    """
+    This function takes in a user id and returns a list of news articles that are similar to the news articles that the user and other users have viewed.
+    """
 
     user = User.objects.get(id=user_id)
 
