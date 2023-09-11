@@ -11,15 +11,15 @@ load_dotenv()
 
 
 class FirebaseAuthentication(BaseAuthentication):
-
     
     credentials = credentials.Certificate(os.path.abspath(os.path.dirname(__file__)) + "/firebase-creds.json")
 
     default_app = firebase_admin.initialize_app(credentials)
 
     def authenticate(self, request):
-        
+        #get header 'Authorization'
         token = request.headers.get('Authorization')
+
         if not token:
             return None
 
@@ -27,7 +27,12 @@ class FirebaseAuthentication(BaseAuthentication):
             decoded_token = auth.verify_id_token(token)
             user_id = decoded_token['uid']
 
-            return User.objects.get(username=user_id), True
-        
-        except:
+            user, created = User.objects.get_or_create(username=user_id)
+
+            return user, True
+
+        except Exception as e:
+            print(e)
             return None, False
+            
+       
