@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'newsapi',
+    'movies',
+    'sports',
     'rest_framework',
     'django_crontab',
 ]
@@ -99,14 +101,13 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASS"),
-        'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("DB_PORT"),
+        'NAME': "railway",
+        'USER': "postgres",
+        'PASSWORD': "u6ueAmbsN7Vs0m2JrHEl",
+        'HOST': "containers-us-west-200.railway.app",
+        'PORT': "6797",
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
