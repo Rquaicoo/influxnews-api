@@ -106,18 +106,14 @@ class NewsAPIView(APIView, PaginationHandlerMixin):
         return Response(serialized_news.data, status=status.HTTP_200_OK)
     
 
-class LikedNewsAPIView(APIView):
+class UserFeedAPIView(APIView, PaginationHandlerMixin):
+    permission_classes  = [AllowAny]
+    pagination_class = NewsPagination
+    serializer_class = NewsSerializer
 
-    def post(self, request):
-        """
-        Parameters:
-        news_id (int)
-        """
-        news_id = request.data.get('news_id')
-        news = News.objects.get(id=news_id)
-        news.likes += 1
-        news.save()
-        return Response("Liked", status=status.HTTP_200_OK)
+    def get(self, request):
+        pass
+
 
 class NewsScraperAPIView(APIView):
     permission_classes  = [AllowAny] #change this to firebase authentication

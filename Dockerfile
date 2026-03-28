@@ -1,24 +1,35 @@
-FROM python:3.8.6-buster
+FROM python:3.12-slim-bookworm
 
-RUN apt update
-RUN apt-get update && apt-get install -y cron
-RUN alias py=python
-
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1 \
+    PORT=8000
 
 WORKDIR /usr/src/influxnews
 
-COPY ./influxnews .
-COPY ./requirements.txt /usr/src/influxnews/
+# Install system dependencies and create cron log directory
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends cron && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /cron && \
+    touch /cron/influxnews.log
 
-COPY ./firebase-creds.json /usr/src/influxnews/accounts/
+# Copy dependency file first for better caching
+COPY requirements.txt .
 
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# django-crontab logfile
-RUN mkdir /cron
-RUN touch /cron/influxnews.log
+# Copy application files
+COPY ./influxnews .
+COPY ./firebase-creds.json accounts/
+
+# Create non-root user for security
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /usr/src/influxnews /cron
+
+USER appuser
 
 EXPOSE 8000
 
-CMD service cron start && python manage.py crontab add && gunicorn influxnews.wsgi:application --bind 0.0.0.0:$PORT
+CMD service cron start && \
+    python manage.py crontab add && \
+    gunicorn influxnews.wsgi:application --bind 0.0.0.0:${PORT}
